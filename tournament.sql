@@ -18,10 +18,10 @@ CREATE TABLE games ( name TEXT,
 					 id SERIAL );
 					 
 -- All Matches information history and the winner result
-CREATE TABLE matches ( player1id SERIAL,
-					 player2id SERIAL,
+CREATE TABLE matches ( player1id SERIAL REFERENCES players(id),
+					 player2id SERIAL REFERENCES players(id),
 					 gameid SERIAL,
-					 winner SERIAL,
+					 winner SERIAL REFERENCES players(id),
 					 createtime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 					 id SERIAL );
 					 
@@ -29,23 +29,24 @@ CREATE TABLE matches ( player1id SERIAL,
 CREATE VIEW playermatches AS
 SELECT players.id, players.name, player1id, player2id, gameid, winner
 FROM players, matches
-WHERE players.id = matches.player1id OR players.id = matches.player2id
+WHERE players.id = matches.player1id OR players.id = matches.player2id;
 
 -- Group by players' id and winner's id to get wins of each players
 CREATE VIEW wins AS
 SELECT id, count(*) as wins
 FROM playermatches
 WHERE id = winner
-GROUP BY id
+GROUP BY id;
 
 -- Group by players' id to get total matches
 CREATE VIEW totalmatches AS
 SELECT id, count(*) as matches
 FROM playermatches
-GROUP BY id
+GROUP BY id;
 
 -- Join wins, totalmatches, and players table to get player standing info
 CREATE VIEW standing AS
-SELECT players.id, players.name, wins, matches
-FROM wins, totalmatches, players
-WHERE wins.id = totalmatches.id
+SELECT players.id, players.name, COALESCE(wins,0) as wins, COALESCE(matches,0) as matches
+FROM players 
+LEFT JOIN wins ON players.id = wins.id
+LEFT JOIN  totalmatches ON players.id = totalmatches.id;
