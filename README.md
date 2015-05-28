@@ -14,4 +14,4 @@
 5. Create tournament database ($ psql createdb tournament)
 6. Go into tournament database to create the tables and views
    using the SQL statements in tournament.sql. ($ psql tournament)
-7. Exit tournament database, and run the units test code. (Python tournament_test.py)
+7. Exit tournament database, and run the units test code. ($ python tournament_test.py)

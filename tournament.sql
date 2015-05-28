@@ -10,12 +10,12 @@
 -- Players' information name and unique id
 CREATE TABLE players ( name TEXT,
                      createtime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                     id SERIAL );
+                     id SERIAL PRIMARY KEY);
 					 
 -- Tounament information to support mutiple tournament.
 CREATE TABLE games ( name TEXT,
 					 createtime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-					 id SERIAL );
+					 id SERIAL PRIMARY KEY);
 					 
 -- All Matches information history and the winner result
 CREATE TABLE matches ( player1id SERIAL REFERENCES players(id),
@@ -23,7 +23,7 @@ CREATE TABLE matches ( player1id SERIAL REFERENCES players(id),
 					 gameid SERIAL,
 					 winner SERIAL REFERENCES players(id),
 					 createtime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-					 id SERIAL );
+					 id SERIAL PRIMARY KEY);
 					 
 -- Give view of all players' matches with player id and name at first two columns 	
 CREATE VIEW playermatches AS
