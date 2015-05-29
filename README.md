@@ -11,12 +11,12 @@
 2. Include the tournament code inside the vagrant directory.
 3. Launch Vagrant VM .
 4. Go to shared tournament folder 
-	<p>$ cd /tournament</p>
+   `$ cd /tournament`
 5. Delete the database if already exists. 
-	<p>$ dropdb tournament</p>
+   `$ dropdb tournament`
 6. Connect psql.
-	<p>$ psql</p>
+   `$ psql`
 6. Create tournament database and schema (tables and views) by importing the tournament.sql. 
-	<p>$ \i tournament</p>
+   `$ \i tournament`
 7. Exit tournament database, and run the units test code.
-	<p>$ python tournament_test.py</p>
+   `$ python tournament_test.py`
