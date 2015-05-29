@@ -6,13 +6,16 @@
 -- You can write comments in this file by starting them with two dashes, like
 -- these lines here.
 
+-- Create database and connect it using the following command 
+CREATE DATABASE tournament;
+\c tournament;
 
 -- Players' information name and unique id
 CREATE TABLE players ( name TEXT,
                      createtime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                      id SERIAL PRIMARY KEY);
 					 
--- Tounament information to support mutiple tournament.
+-- Tounament information to support mutiple tournament
 CREATE TABLE games ( name TEXT,
 					 createtime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 					 id SERIAL PRIMARY KEY);
@@ -49,4 +52,5 @@ CREATE VIEW standing AS
 SELECT players.id, players.name, COALESCE(wins,0) as wins, COALESCE(matches,0) as matches
 FROM players 
 LEFT JOIN wins ON players.id = wins.id
-LEFT JOIN  totalmatches ON players.id = totalmatches.id;
+LEFT JOIN  totalmatches ON players.id = totalmatches.id
+ORDER BY wins;

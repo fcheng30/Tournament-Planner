@@ -7,11 +7,16 @@
 
 
 ##Run:
-1. Install Vagrant and VirtualBox
-2. Include the tournament code inside the vagrant directory
-3. Launch Vagrant VM 
-4. Go to tournament folder ($ cd /tournament)
-5. Create tournament database ($ psql createdb tournament)
-6. Go into tournament database to create the tables and views
-   using the SQL statements in tournament.sql. ($ psql tournament)
-7. Exit tournament database, and run the units test code. ($ python tournament_test.py)
+1. Install Vagrant and VirtualBox.
+2. Include the tournament code inside the vagrant directory.
+3. Launch Vagrant VM .
+4. Go to shared tournament folder 
+	<p>$ cd /tournament</p>
+5. Delete the database if already exists. 
+	<p>$ dropdb tournament</p>
+6. Connect psql.
+	<p>$ psql</p>
+6. Create tournament database and schema (tables and views) by importing the tournament.sql. 
+	<p>$ \i tournament</p>
+7. Exit tournament database, and run the units test code.
+	<p>$ python tournament_test.py</p>
