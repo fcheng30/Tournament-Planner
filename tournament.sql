@@ -6,6 +6,9 @@
 -- You can write comments in this file by starting them with two dashes, like
 -- these lines here.
 
+-- Delete the database if already exists. 
+drop database if exists tournament;
+
 -- Create database and connect it using the following command 
 CREATE DATABASE tournament;
 \c tournament;

@@ -1,56 +1,62 @@
 #!/usr/bin/env python
-# 
+#
 # tournament.py -- implementation of a Swiss-system tournament
-# 
+#
 
 import psycopg2
 
 
-def connect():
+def connect(database_name="tournament"):
     """Connect to the PostgreSQL database.  Returns a database connection."""
-    return psycopg2.connect("dbname=tournament")
+    try:
+        db = psycopg2.connect("dbname={}".format(database_name))
+        cursor = db.cursor()
+        return db, cursor
+    except:
+        print("<error message>")
 
 
 def deleteMatches():
     """Remove all the match records from the database."""
-    DB = connect()
-    cur = DB.cursor()
-    cur.execute("DELETE FROM matches")
+    DB, cur = connect()
+    cur.execute("TRUNCATE matches CASCADE")
     DB.commit()
     DB.close()
+
 
 def deletePlayers():
     """Remove all the player records from the database."""
-    DB = connect()
-    cur = DB.cursor()
-    cur.execute("DELETE FROM players")
+    DB, cur = connect()
+    cur.execute("TRUNCATE players CASCADE")
     DB.commit()
     DB.close()
 
+
 def countPlayers():
     """Returns the number of players currently registered."""
-    DB = connect()
-    cur = DB.cursor()
-    cur.execute("SELECT count(*) FROM players")
+    DB, cur = connect()
+    query = "SELECT count(*) FROM players;"
+    cur.execute(query)
     totalplayers = cur.fetchone()
     totalnum = int(totalplayers[0])
     DB.commit()
     DB.close()
     return totalnum
 
+
 def registerPlayer(name):
     """Adds a player to the tournament database.
-  
+
     The database assigns a unique serial id number for the player.  (This
     should be handled by your SQL database schema, not in your Python code.)
-  
+
     Args:
       name: the player's full name (need not be unique).
     """
-    DB = connect()
-    cur = DB.cursor()
-    cur.execute("INSERT INTO players (name) VALUES (%s)",
-                (name,))
+    DB, cur = connect()
+    query = "INSERT INTO players (name) VALUES (%s);"
+    parameter = (name,)
+    cur.execute(query, parameter)
     DB.commit()
     DB.close()
 
@@ -58,8 +64,8 @@ def registerPlayer(name):
 def playerStandings():
     """Returns a list of the players and their win records, sorted by wins.
 
-    The first entry in the list should be the player in first place, or a player
-    tied for first place if there is currently a tie.
+    The first entry in the list should be the player in first place, or
+    a player tied for first place if there is currently a tie.
 
     Returns:
       A list of tuples, each of which contains (id, name, wins, matches):
@@ -68,9 +74,9 @@ def playerStandings():
         wins: the number of matches the player has won
         matches: the number of matches the player has played
     """
-    DB = connect()
-    cur = DB.cursor()
-    cur.execute("SELECT * FROM standing")
+    DB, cur = connect()
+    query = "SELECT * FROM standing;"
+    cur.execute(query)
     list = cur.fetchall()
     DB.commit()
     DB.close()
@@ -85,22 +91,23 @@ def reportMatch(winner, loser, gameid):
       loser:  the id number of the player who lost
       gameid: Identfy which game they are in
     """
-    DB = connect()
-    cur = DB.cursor()
-    cur.execute("INSERT INTO matches (player1id,player2id,gameid,winner) VALUES (%s,%s,%s,%s)",
-                (winner, loser, gameid, winner,))
+    DB, cur = connect()
+    query = "INSERT INTO matches (player1id,player2id,gameid,winner) \
+               VALUES (%s,%s,%s,%s);"
+    parameter = (winner, loser, gameid, winner,)
+    cur.execute(query, parameter)
     DB.commit()
     DB.close()
- 
- 
+
+
 def swissPairings():
     """Returns a list of pairs of players for the next round of a match.
-  
+
     Assuming that there are an even number of players registered, each player
     appears exactly once in the pairings.  Each player is paired with another
     player with an equal or nearly-equal win record, that is, a player adjacent
     to him or her in the standings.
-  
+
     Returns:
       A list of tuples, each of which contains (id1, name1, id2, name2)
         id1: the first player's unique id
@@ -108,9 +115,9 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
-    DB = connect()
-    cur = DB.cursor()
-    cur.execute("SELECT * FROM standing ORDER BY wins")
+    DB, cur = connect()
+    query = "SELECT * FROM standing;"
+    cur.execute(query)
     list = cur.fetchall()
     counter = 0
     result = []
@@ -124,4 +131,3 @@ def swissPairings():
     DB.commit()
     DB.close()
     return result
-
